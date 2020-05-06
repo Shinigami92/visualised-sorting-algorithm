@@ -3,7 +3,12 @@ v-app
     v-container
       v-row(dense)
         v-col(cols="12")
-          v-select(v-model="sortAlgorithm", :items="sortAlgorithms", :disabled="uiElementsDisabled")
+          v-select(
+            v-model="sortAlgorithm",
+            :items="sortAlgorithms",
+            @input="switchSortAlgorithm",
+            :disabled="uiElementsDisabled"
+          )
         v-col(cols="12")
           v-btn(v-if="uiElementsDisabled", block, color="red", dark, @click="onStop") Stop!
           v-btn(v-else, block, color="green", dark, @click="onSort") Sort!

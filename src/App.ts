@@ -4,6 +4,7 @@ import Component from 'vue-class-component';
 import { Ref } from 'vue-property-decorator';
 import { AbstractSortService } from './shared/AbstractSortService';
 import { BubbleSortService } from './shared/BubbleSortService';
+import { InsertionSortService } from './shared/InsertionSortService';
 
 export const enum SortAlgorithmName {
   BubbleSort = 'BubbleSort',
@@ -38,7 +39,7 @@ export default class App extends Vue {
   private sortService: AbstractSortService<number> | null = null;
 
   public get sortAlgorithms(): SortAlgorithmName[] {
-    return [SortAlgorithmName.BubbleSort];
+    return [SortAlgorithmName.BubbleSort, SortAlgorithmName.InsertionSort];
   }
 
   public get uiElementsDisabled(): boolean {
@@ -65,27 +66,21 @@ export default class App extends Vue {
       return;
     }
     switch (sortAlgorithmName) {
-      // case BubbleSort:
-      // 	if (!(sortService instanceof BubbleSortService)) {
-      // 		System.out.println("Switched to BubbleSort");
-      // 		statusbarSortalgorithm.setText("BubbleSort");
-      // 		sortService = sortServices.get(SortAlgorithmName.BubbleSort);
-      // 	}
-      // 	break;
-      // case SelectionSort:
-      // 	if (!(sortService instanceof SelectionSortService)) {
-      // 		System.out.println("Switched to SelectionSort");
-      // 		statusbarSortalgorithm.setText("SelectionSort");
-      // 		sortService = sortServices.get(SortAlgorithmName.SelectionSort);
-      // 	}
-      // 	break;
-      // case InsertionSort:
-      // 	if (!(sortService instanceof InsertionSortService)) {
-      // 		System.out.println("Switched to InsertionSort");
-      // 		statusbarSortalgorithm.setText("InsertionSort");
-      // 		sortService = sortServices.get(SortAlgorithmName.InsertionSort);
-      // 	}
-      // 	break;
+      //   case SortAlgorithmName. SelectionSort:
+      //   	if (!(this.sortService instanceof SelectionSortService)) {
+      //   		System.out.println("Switched to SelectionSort");
+      //   		statusbarSortalgorithm.setText("SelectionSort");
+      //   		sortService = sortServices.get(SortAlgorithmName.SelectionSort);
+      //   	}
+      //   	break;
+      case SortAlgorithmName.InsertionSort:
+        if (!(this.sortService instanceof InsertionSortService)) {
+          console.log('Switched to InsertionSort');
+          // statusbarSortalgorithm.setText("InsertionSort");
+          this.sortAlgorithm = SortAlgorithmName.InsertionSort;
+          this.sortService = this.sortServices.get(SortAlgorithmName.InsertionSort) ?? null;
+        }
+        break;
       // case QuickSort:
       // 	if (!(sortService instanceof QuickSortService)) {
       // 		System.out.println("Switched to QuickSort");
@@ -114,6 +109,7 @@ export default class App extends Vue {
       // 		sortService = sortServices.get(SortAlgorithmName.RandomSelectionSort);
       // 	}
       // 	break;
+      case SortAlgorithmName.BubbleSort:
       default:
         if (!(this.sortService instanceof BubbleSortService)) {
           console.log('Switched to BubbleSort');
@@ -124,20 +120,6 @@ export default class App extends Vue {
         break;
     }
   }
-
-  //   private disableUIElements(disable: boolean): void {
-  // if (disable) {
-  //   sbSortAlgorithm.setDisable(true);
-  //   bStart.setText('Stop!');
-  //   bShuffle.setDisable(true);
-  //   tN.setDisable(true);
-  // } else {
-  //   sbSortAlgorithm.setDisable(false);
-  //   bStart.setText('Sort!');
-  //   bShuffle.setDisable(false);
-  //   tN.setDisable(false);
-  // }
-  //   }
 
   public async onResize(): Promise<void> {
     if (this.canvas) {
@@ -153,6 +135,10 @@ export default class App extends Vue {
     this.sortServices.set(
       SortAlgorithmName.BubbleSort,
       new BubbleSortService<number>(this.list, (i1, i2) => i1 < i2, undefined, this.millis)
+    );
+    this.sortServices.set(
+      SortAlgorithmName.InsertionSort,
+      new InsertionSortService<number>(this.list, (i1, i2) => i1 < i2, undefined, this.millis)
     );
 
     this.switchSortAlgorithm(SortAlgorithmName.BubbleSort);
