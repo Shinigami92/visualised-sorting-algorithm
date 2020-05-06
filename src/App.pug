@@ -17,7 +17,7 @@ v-app
         v-col(cols="12")
           v-subheader.pl-1 Elements
           v-slider.pt-5(
-            :value="100",
+            :value="1000",
             min="10",
             max="15000",
             hide-details,
@@ -42,7 +42,7 @@ v-app
             inverse-label
           )
         v-col(cols="12")
-          v-select(:items="['DEFAULT_DOTS']")
+          v-select(v-model="theme", :items="themes")
 
   v-app-bar(app, fixed, clipped-left)
     v-toolbar-title Visualised Sorting Algorithm
