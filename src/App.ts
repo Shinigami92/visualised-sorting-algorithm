@@ -41,6 +41,10 @@ export default class App extends Vue {
     return [SortAlgorithmName.BubbleSort];
   }
 
+  public get uiElementsDisabled(): boolean {
+    return this.sortService?.isRunning() ?? false;
+  }
+
   private fillList(): void {
     this.list.length = 0;
     for (let i: number = 0; i < this.N; i++) {
@@ -213,11 +217,19 @@ export default class App extends Vue {
       return;
     }
 
-    if (this.sortService.isRunning()) {
-      this.sortService.cancel();
-    } else {
+    if (!this.sortService.isRunning()) {
       this.sortService.setLines(this.list);
       this.sortService.restart();
+    }
+  }
+
+  public onStop(): void {
+    if (!this.sortService) {
+      return;
+    }
+
+    if (this.sortService.isRunning()) {
+      this.sortService.cancel();
     }
   }
 

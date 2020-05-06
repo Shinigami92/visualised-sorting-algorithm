@@ -3,13 +3,14 @@ v-app
     v-container
       v-row(dense)
         v-col(cols="12")
-          v-select(v-model="sortAlgorithm", :items="sortAlgorithms")
+          v-select(v-model="sortAlgorithm", :items="sortAlgorithms", :disabled="uiElementsDisabled")
         v-col(cols="12")
-          v-btn(block, @click="onSort") Sort!
+          v-btn(v-if="uiElementsDisabled", block, color="red", dark, @click="onStop") Stop!
+          v-btn(v-else, block, color="green", dark, @click="onSort") Sort!
         v-col(cols="12")
-          v-btn(block, @click="onShuffle") Shuffle!
+          v-btn(block, @click="onShuffle", :disabled="uiElementsDisabled") Shuffle!
         v-col(cols="12")
-          v-text-field(type="number", :value="1000", min="10", max="15000") Shuffle!
+          v-text-field(type="number", :value="1000", min="10", max="15000", :disabled="uiElementsDisabled") Shuffle!
         v-col(cols="12")
           v-checkbox(label="Delay between swaps")
         v-col(cols="12")
