@@ -6,7 +6,6 @@ export class BubbleSortService<T> extends AbstractSortService<T> {
   }
 
   protected *process(): Generator<boolean, void, unknown> {
-    this.running = true;
     for (let n: number = this.listSize; n > 1; n--) {
       for (let i: number = 0; i < this.listSize - 1; i++) {
         let t1: T = this.list[i];
@@ -19,16 +18,10 @@ export class BubbleSortService<T> extends AbstractSortService<T> {
             this.list[i] = this.list[i + 1];
             this.list[i + 1] = temp;
           }
-          if (this.interrupt) {
-            this.running = false;
-            this.interrupt = false;
-            yield false;
-          }
           yield true;
         }
       }
     }
-    this.running = false;
     yield false;
   }
 }

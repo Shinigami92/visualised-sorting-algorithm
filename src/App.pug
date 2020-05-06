@@ -16,7 +16,7 @@ v-app
           v-btn(block, @click="onShuffle", :disabled="uiElementsDisabled") Shuffle!
         v-col(cols="12")
           v-subheader.pl-1 Elements
-          v-slider(
+          v-slider.pt-5(
             :value="100",
             min="10",
             max="15000",
@@ -29,7 +29,18 @@ v-app
             :disabled="uiElementsDisabled"
           )
         v-col(cols="12")
-          v-checkbox(label="Delay between swaps")
+          v-subheader.pl-1 Delay between swaps
+          v-slider.pt-5(
+            v-model="millis",
+            min="4",
+            max="200",
+            hide-details,
+            thumb-label="always",
+            ticks="always",
+            tick-size="0",
+            label="ms",
+            inverse-label
+          )
         v-col(cols="12")
           v-select(:items="['DEFAULT_DOTS']")
 

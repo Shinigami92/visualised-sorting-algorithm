@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Ref } from 'vue-property-decorator';
+import { Ref, Watch } from 'vue-property-decorator';
 import { AbstractSortService } from './shared/AbstractSortService';
 import { BubbleSortService } from './shared/BubbleSortService';
 import { InsertionSortService } from './shared/InsertionSortService';
 import { SelectionSortService } from './shared/SelectionSortService';
+import { sleep } from './shared/UtilFunction';
 
 export const enum SortAlgorithmName {
   BubbleSort = 'BubbleSort',
@@ -15,10 +16,6 @@ export const enum SortAlgorithmName {
   RandomSelectionSort = 'RandomSelectionSort',
   QuickSort = 'QuickSort',
   QuickSortNotThreaded = 'QuickSortNotThreaded'
-}
-
-export function sleep(ms: number): Promise<unknown> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 @Component
@@ -32,10 +29,9 @@ export default class App extends Vue {
 
   public n: number = 100;
   private N: number = 100;
-  private millis: number = 1;
+  public delayActive: boolean = true;
+  private millis: number = 10;
   private list: number[] = [];
-
-  private renderLoopHandle: number | null = null;
 
   private readonly sortServices: Map<SortAlgorithmName, AbstractSortService<number>> = new Map();
   private sortService: AbstractSortService<number> | null = null;
@@ -134,6 +130,13 @@ export default class App extends Vue {
     this.randomizeList();
   }
 
+  @Watch('millis', { immediate: true })
+  public onMillisChange(millis: number): void {
+    if (this.sortService) {
+      this.sortServices.forEach((s) => (s.millis = millis));
+    }
+  }
+
   public async onResize(): Promise<void> {
     if (this.canvas) {
       await this.$nextTick();
@@ -165,30 +168,7 @@ export default class App extends Vue {
   }
 
   public mounted(): void {
-    // const ctx: CanvasRenderingContext2D | null = this.canvas.getContext('2d');
-    // if (!ctx) {
-    //   return;
-    // }
-    // const canvasWidth: number = this.canvas.width;
-    // const canvasHeight: number = this.canvas.height;
-
-    // this.renderLoopHandle = setInterval(() => {
-    //   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    //   ctx.fillStyle = 'black';
-
-    //   for (let index: number = 0; index < this.list.length; index++) {
-    //     const x: number = (index / this.list.length) * canvasWidth;
-    //     const y: number = (this.list[index] / this.N) * canvasHeight;
-    //     ctx.fillRect(x, y, 4, 4);
-    //   }
-    // }, 10);
     this.renderLoop();
-  }
-
-  public beforeDestroy(): void {
-    if (this.renderLoopHandle !== null) {
-      clearInterval(this.renderLoopHandle);
-    }
   }
 
   private async renderLoop(): Promise<void> {

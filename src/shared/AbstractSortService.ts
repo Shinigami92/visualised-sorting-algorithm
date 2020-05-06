@@ -1,10 +1,12 @@
+import { sleep } from './UtilFunction';
+
 export type CompareCallback<T> = (t1: T, t2: T) => boolean;
 export type SwapCallback<T> = (list: T[], i1: number, i2: number) => void;
 
 export abstract class AbstractSortService<T> {
   protected list: T[];
   protected listSize: number;
-  protected millis: number;
+  protected _millis: number;
   protected readonly compare: CompareCallback<T>;
   protected readonly swap?: SwapCallback<T>;
   protected running: boolean = false;
@@ -18,19 +20,23 @@ export abstract class AbstractSortService<T> {
     this.listSize = list.length;
     this.compare = compare;
     this.swap = swap;
-    this.millis = millis;
+    this._millis = millis;
+  }
+
+  public get millis(): number {
+    return this._millis;
+  }
+
+  public set millis(millis: number) {
+    if (millis < 0) {
+      throw new Error('millis should not be negative');
+    }
+    this._millis = millis;
   }
 
   public setLines(list: T[]): void {
     this.list = list;
     this.listSize = list.length;
-  }
-
-  public setMillis(millis: number): void {
-    if (millis < 0) {
-      throw new Error('millis should not be negative');
-    }
-    this.millis = millis;
   }
 
   public isRunning(): boolean {
@@ -50,14 +56,18 @@ export abstract class AbstractSortService<T> {
     }
   }
 
-  protected start(): void {
+  protected async start(): Promise<void> {
     const process: IterableIterator<boolean> = this.process();
-    const handleId: number = setInterval(() => {
+    this.running = true;
+    while (!this.interrupt) {
       const hasNext: boolean = process.next().value;
       if (!hasNext) {
-        clearInterval(handleId);
+        break;
       }
-    }, this.millis);
+      await sleep(this.millis);
+    }
+    this.interrupt = false;
+    this.running = false;
   }
 
   protected abstract process(): IterableIterator<boolean>;

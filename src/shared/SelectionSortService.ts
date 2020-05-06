@@ -6,7 +6,6 @@ export class SelectionSortService<T> extends AbstractSortService<T> {
   }
 
   protected *process(): Generator<boolean, void, unknown> {
-    this.running = true;
     for (let j: number = 0; j < this.listSize - 1; j++) {
       let iMin: number = j;
       for (let i: number = j + 1; i < this.listSize; i++) {
@@ -22,15 +21,9 @@ export class SelectionSortService<T> extends AbstractSortService<T> {
           this.list[j] = this.list[iMin];
           this.list[iMin] = temp;
         }
-        if (this.interrupt) {
-          this.running = false;
-          this.interrupt = false;
-          yield false;
-        }
         yield true;
       }
     }
-    this.running = false;
     yield false;
   }
 }

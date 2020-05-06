@@ -6,7 +6,6 @@ export class InsertionSortService<T> extends AbstractSortService<T> {
   }
 
   protected *process(): Generator<boolean, void, unknown> {
-    this.running = true;
     for (let i: number = 1; i < this.listSize; i++) {
       let j: number = i;
       while (j > 0) {
@@ -22,16 +21,10 @@ export class InsertionSortService<T> extends AbstractSortService<T> {
           this.list[j] = this.list[j - 1];
           this.list[j - 1] = temp;
         }
-        if (this.interrupt) {
-          this.running = false;
-          this.interrupt = false;
-          yield false;
-        }
         yield true;
         j--;
       }
     }
-    this.running = false;
     yield false;
   }
 }
