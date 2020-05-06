@@ -15,7 +15,19 @@ v-app
         v-col(cols="12")
           v-btn(block, @click="onShuffle", :disabled="uiElementsDisabled") Shuffle!
         v-col(cols="12")
-          v-text-field(type="number", :value="1000", min="10", max="15000", :disabled="uiElementsDisabled") Shuffle!
+          v-subheader.pl-1 Elements
+          v-slider(
+            :value="100",
+            min="10",
+            max="15000",
+            hide-details,
+            thumb-label="always",
+            ticks="always",
+            step="10",
+            tick-size="0",
+            @end="changeN",
+            :disabled="uiElementsDisabled"
+          )
         v-col(cols="12")
           v-checkbox(label="Delay between swaps")
         v-col(cols="12")

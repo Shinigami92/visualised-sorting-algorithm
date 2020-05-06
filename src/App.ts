@@ -30,6 +30,7 @@ export default class App extends Vue {
   @Ref('canvas')
   public readonly canvas!: HTMLCanvasElement;
 
+  public n: number = 100;
   private N: number = 100;
   private millis: number = 1;
   private list: number[] = [];
@@ -121,6 +122,16 @@ export default class App extends Vue {
         }
         break;
     }
+  }
+
+  public changeN(newN: number): void {
+    if (this.n === newN) {
+      return;
+    }
+
+    this.N = newN;
+    this.fillList();
+    this.randomizeList();
   }
 
   public async onResize(): Promise<void> {
