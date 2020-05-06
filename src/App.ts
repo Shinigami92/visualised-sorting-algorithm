@@ -5,6 +5,7 @@ import { Ref } from 'vue-property-decorator';
 import { AbstractSortService } from './shared/AbstractSortService';
 import { BubbleSortService } from './shared/BubbleSortService';
 import { InsertionSortService } from './shared/InsertionSortService';
+import { SelectionSortService } from './shared/SelectionSortService';
 
 export const enum SortAlgorithmName {
   BubbleSort = 'BubbleSort',
@@ -39,7 +40,7 @@ export default class App extends Vue {
   private sortService: AbstractSortService<number> | null = null;
 
   public get sortAlgorithms(): SortAlgorithmName[] {
-    return [SortAlgorithmName.BubbleSort, SortAlgorithmName.InsertionSort];
+    return [SortAlgorithmName.BubbleSort, SortAlgorithmName.SelectionSort, SortAlgorithmName.InsertionSort];
   }
 
   public get uiElementsDisabled(): boolean {
@@ -66,13 +67,14 @@ export default class App extends Vue {
       return;
     }
     switch (sortAlgorithmName) {
-      //   case SortAlgorithmName. SelectionSort:
-      //   	if (!(this.sortService instanceof SelectionSortService)) {
-      //   		System.out.println("Switched to SelectionSort");
-      //   		statusbarSortalgorithm.setText("SelectionSort");
-      //   		sortService = sortServices.get(SortAlgorithmName.SelectionSort);
-      //   	}
-      //   	break;
+      case SortAlgorithmName.SelectionSort:
+        if (!(this.sortService instanceof SelectionSortService)) {
+          console.log('Switched to SelectionSort');
+          // statusbarSortalgorithm.setText('SelectionSort');
+          this.sortAlgorithm = SortAlgorithmName.SelectionSort;
+          this.sortService = this.sortServices.get(SortAlgorithmName.SelectionSort) ?? null;
+        }
+        break;
       case SortAlgorithmName.InsertionSort:
         if (!(this.sortService instanceof InsertionSortService)) {
           console.log('Switched to InsertionSort');
@@ -135,6 +137,10 @@ export default class App extends Vue {
     this.sortServices.set(
       SortAlgorithmName.BubbleSort,
       new BubbleSortService<number>(this.list, (i1, i2) => i1 < i2, undefined, this.millis)
+    );
+    this.sortServices.set(
+      SortAlgorithmName.SelectionSort,
+      new SelectionSortService<number>(this.list, (i1, i2) => i1 > i2, undefined, this.millis)
     );
     this.sortServices.set(
       SortAlgorithmName.InsertionSort,
