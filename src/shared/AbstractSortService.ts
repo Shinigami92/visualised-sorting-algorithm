@@ -57,10 +57,14 @@ export abstract class AbstractSortService<T, U = T> {
   }
 
   protected async start(): Promise<void> {
-    const process: IterableIterator<boolean> = this.process();
+    const process: IterableIterator<boolean> | AsyncIterableIterator<boolean> = this.process();
     this.running = true;
     while (!this.interrupt) {
-      const hasNext: boolean = process.next().value;
+      const next:
+        | IteratorYieldResult<boolean>
+        | IteratorReturnResult<any>
+        | Promise<IteratorResult<boolean, any>> = process.next();
+      const hasNext: boolean = next instanceof Promise ? (await next).value : next.value;
       if (!hasNext) {
         break;
       }
@@ -70,5 +74,5 @@ export abstract class AbstractSortService<T, U = T> {
     this.running = false;
   }
 
-  protected abstract process(): IterableIterator<boolean>;
+  protected abstract process(): IterableIterator<boolean> | AsyncIterableIterator<boolean>;
 }

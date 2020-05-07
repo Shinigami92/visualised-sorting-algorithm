@@ -4,6 +4,7 @@ import { Ref, Watch } from 'vue-property-decorator';
 import { AbstractSortService } from './shared/AbstractSortService';
 import { BubbleSortService } from './shared/BubbleSortService';
 import { InsertionSortService } from './shared/InsertionSortService';
+import { QuickSortNotThreadedService } from './shared/QuickSortNotThreadedService';
 import { SelectionSortService } from './shared/SelectionSortService';
 import { ShellSortService } from './shared/ShellSortService';
 import { sleep } from './shared/UtilFunction';
@@ -45,10 +46,10 @@ export default class App extends Vue {
     SortAlgorithmName.BubbleSort,
     SortAlgorithmName.SelectionSort,
     SortAlgorithmName.InsertionSort,
-    SortAlgorithmName.ShellSort
+    SortAlgorithmName.ShellSort,
     //   SortAlgorithmName.RandomSelectionSort,
     //   SortAlgorithmName.QuickSort,
-    //   SortAlgorithmName.QuickSortNotThreaded
+    SortAlgorithmName.QuickSortNotThreaded
   ];
 
   public readonly themes: ReadonlyArray<Theme> = [
@@ -99,13 +100,13 @@ export default class App extends Vue {
       // 		sortService = sortServices.get(SortAlgorithmName.QuickSort);
       // 	}
       // 	break;
-      // case QuickSortNotThreaded:
-      // 	if (!(sortService instanceof QuickSortNotThreadedService)) {
-      // 		System.out.println("Switched to QuickSortNotThreaded");
-      // 		statusbarSortalgorithm.setText("QuickSortNotThreaded");
-      // 		sortService = sortServices.get(SortAlgorithmName.QuickSortNotThreaded);
-      // 	}
-      // 	break;
+      case SortAlgorithmName.QuickSortNotThreaded:
+        if (!(this.sortService instanceof QuickSortNotThreadedService)) {
+          console.log('Switched to QuickSortNotThreaded');
+          // statusbarSortalgorithm.setText('QuickSortNotThreaded');
+          this.sortService = this.sortServices.get(SortAlgorithmName.QuickSortNotThreaded) ?? null;
+        }
+        break;
       case SortAlgorithmName.ShellSort:
         if (!(this.sortService instanceof ShellSortService)) {
           console.log('Switched to ShellSort');
@@ -200,6 +201,17 @@ export default class App extends Vue {
     this.sortServices.set(
       SortAlgorithmName.ShellSort,
       new ShellSortService<number, number>(this.list, (i, v) => i < v, undefined, undefined, undefined, this.millis)
+    );
+    this.sortServices.set(
+      SortAlgorithmName.QuickSortNotThreaded,
+      new QuickSortNotThreadedService<number, number>(
+        this.list,
+        (i, v) => i > v,
+        (i, v) => i < v,
+        undefined,
+        undefined,
+        this.millis
+      )
     );
 
     this.switchSortAlgorithm(SortAlgorithmName.BubbleSort);
