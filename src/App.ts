@@ -5,6 +5,7 @@ import { AbstractSortService } from './shared/AbstractSortService';
 import { BubbleSortService } from './shared/BubbleSortService';
 import { InsertionSortService } from './shared/InsertionSortService';
 import { QuickSortNotThreadedService } from './shared/QuickSortNotThreadedService';
+import { QuickSortService } from './shared/QuickSortService';
 import { SelectionSortService } from './shared/SelectionSortService';
 import { ShellSortService } from './shared/ShellSortService';
 import { sleep } from './shared/UtilFunction';
@@ -48,7 +49,7 @@ export default class App extends Vue {
     SortAlgorithmName.InsertionSort,
     SortAlgorithmName.ShellSort,
     //   SortAlgorithmName.RandomSelectionSort,
-    //   SortAlgorithmName.QuickSort,
+    SortAlgorithmName.QuickSort,
     SortAlgorithmName.QuickSortNotThreaded
   ];
 
@@ -93,13 +94,13 @@ export default class App extends Vue {
           this.sortService = this.sortServices.get(SortAlgorithmName.InsertionSort) ?? null;
         }
         break;
-      // case QuickSort:
-      // 	if (!(sortService instanceof QuickSortService)) {
-      // 		System.out.println("Switched to QuickSort");
-      // 		statusbarSortalgorithm.setText("QuickSort");
-      // 		sortService = sortServices.get(SortAlgorithmName.QuickSort);
-      // 	}
-      // 	break;
+      case SortAlgorithmName.QuickSort:
+        if (!(this.sortService instanceof QuickSortService)) {
+          console.log('Switched to QuickSort');
+          // statusbarSortalgorithm.setText("QuickSort");
+          this.sortService = this.sortServices.get(SortAlgorithmName.QuickSort) ?? null;
+        }
+        break;
       case SortAlgorithmName.QuickSortNotThreaded:
         if (!(this.sortService instanceof QuickSortNotThreadedService)) {
           console.log('Switched to QuickSortNotThreaded');
@@ -205,6 +206,17 @@ export default class App extends Vue {
     this.sortServices.set(
       SortAlgorithmName.QuickSortNotThreaded,
       new QuickSortNotThreadedService<number, number>(
+        this.list,
+        (i, v) => i > v,
+        (i, v) => i < v,
+        undefined,
+        undefined,
+        this.millis
+      )
+    );
+    this.sortServices.set(
+      SortAlgorithmName.QuickSort,
+      new QuickSortService<number, number>(
         this.list,
         (i, v) => i > v,
         (i, v) => i < v,
