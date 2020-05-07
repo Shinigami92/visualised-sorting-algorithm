@@ -5,6 +5,7 @@ import { AbstractSortService } from './shared/AbstractSortService';
 import { BubbleSortService } from './shared/BubbleSortService';
 import { InsertionSortService } from './shared/InsertionSortService';
 import { SelectionSortService } from './shared/SelectionSortService';
+import { ShellSortService } from './shared/ShellSortService';
 import { sleep } from './shared/UtilFunction';
 
 export const enum SortAlgorithmName {
@@ -43,8 +44,8 @@ export default class App extends Vue {
   public readonly sortAlgorithms: ReadonlyArray<SortAlgorithmName> = [
     SortAlgorithmName.BubbleSort,
     SortAlgorithmName.SelectionSort,
-    SortAlgorithmName.InsertionSort
-    //   SortAlgorithmName.ShellSort,
+    SortAlgorithmName.InsertionSort,
+    SortAlgorithmName.ShellSort
     //   SortAlgorithmName.RandomSelectionSort,
     //   SortAlgorithmName.QuickSort,
     //   SortAlgorithmName.QuickSortNotThreaded
@@ -105,13 +106,13 @@ export default class App extends Vue {
       // 		sortService = sortServices.get(SortAlgorithmName.QuickSortNotThreaded);
       // 	}
       // 	break;
-      // case ShellSort:
-      // 	if (!(sortService instanceof ShellSortService)) {
-      // 		System.out.println("Switched to ShellSort");
-      // 		statusbarSortalgorithm.setText("ShellSort");
-      // 		sortService = sortServices.get(SortAlgorithmName.ShellSort);
-      // 	}
-      // 	break;
+      case SortAlgorithmName.ShellSort:
+        if (!(this.sortService instanceof ShellSortService)) {
+          console.log('Switched to ShellSort');
+          // statusbarSortalgorithm.setText('ShellSort');
+          this.sortService = this.sortServices.get(SortAlgorithmName.ShellSort) ?? null;
+        }
+        break;
       // case RandomSelectionSort:
       // 	if (!(sortService instanceof RandomSelectionSortService)) {
       // 		System.out.println("Switched to RandomSelectionSort");
@@ -195,6 +196,10 @@ export default class App extends Vue {
     this.sortServices.set(
       SortAlgorithmName.InsertionSort,
       new InsertionSortService<number>(this.list, (i1, i2) => i1 < i2, undefined, this.millis)
+    );
+    this.sortServices.set(
+      SortAlgorithmName.ShellSort,
+      new ShellSortService<number, number>(this.list, (i, v) => i < v, undefined, undefined, undefined, this.millis)
     );
 
     this.switchSortAlgorithm(SortAlgorithmName.BubbleSort);

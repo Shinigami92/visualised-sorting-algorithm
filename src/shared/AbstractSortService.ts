@@ -1,18 +1,18 @@
 import { sleep } from './UtilFunction';
 
-export type CompareCallback<T> = (t1: T, t2: T) => boolean;
+export type CompareCallback<T, U = T> = (t: T, u: U) => boolean;
 export type SwapCallback<T> = (list: T[], i1: number, i2: number) => void;
 
-export abstract class AbstractSortService<T> {
+export abstract class AbstractSortService<T, U = T> {
   protected list: T[];
   protected listSize: number;
   protected _millis: number;
-  protected readonly compare: CompareCallback<T>;
+  protected readonly compare: CompareCallback<T, U>;
   protected readonly swap?: SwapCallback<T>;
   protected running: boolean = false;
   protected interrupt: boolean = false;
 
-  public constructor(list: T[], compare: CompareCallback<T>, swap?: SwapCallback<T>, millis: number = 0) {
+  public constructor(list: T[], compare: CompareCallback<T, U>, swap?: SwapCallback<T>, millis: number = 0) {
     if (millis < 0) {
       throw new Error('millis should not be negative');
     }
