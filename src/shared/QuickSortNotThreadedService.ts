@@ -1,8 +1,7 @@
-import { AbstractSortService, CompareCallback, SwapCallback } from './AbstractSortService';
+import { AbstractSortService, CompareCallback } from './AbstractSortService';
 import { sleep } from './UtilFunction';
 
-export class QuickSortNotThreadedService<T, U> extends AbstractSortService<T, U> {
-  private readonly pivotSave?: (t: T) => U;
+export class QuickSortNotThreadedService<T, U extends T> extends AbstractSortService<T, U> {
   private readonly leftCompare: CompareCallback<T, U>;
   private readonly rightCompare: CompareCallback<T, U>;
 
@@ -10,12 +9,9 @@ export class QuickSortNotThreadedService<T, U> extends AbstractSortService<T, U>
     list: T[],
     leftCompare: CompareCallback<T, U>,
     rightCompare: CompareCallback<T, U>,
-    pivotSave?: (t: T) => U,
-    swap?: SwapCallback<T>,
     millis: number = 0
   ) {
-    super(list, null as any, swap, millis);
-    this.pivotSave = pivotSave;
+    super(list, null as any, millis);
     this.leftCompare = leftCompare;
     this.rightCompare = rightCompare;
   }
@@ -43,7 +39,7 @@ export class QuickSortNotThreadedService<T, U> extends AbstractSortService<T, U>
   }
 
   private *partition(lo: number, hi: number): Generator<boolean, number, unknown> {
-    const pivot: U = this.pivotSave ? this.pivotSave(this.list[lo]) : ((this.list[lo] as unknown) as U);
+    const pivot: U = this.list[lo] as U;
     let i: number = lo - 1;
     let j: number = hi + 1;
     while (!this.interrupt) {
@@ -56,13 +52,7 @@ export class QuickSortNotThreadedService<T, U> extends AbstractSortService<T, U>
       if (i >= j) {
         return j;
       }
-      if (this.swap) {
-        this.swap(this.list, i, j);
-      } else {
-        const temp: T = this.list[i];
-        this.list[i] = this.list[j];
-        this.list[j] = temp;
-      }
+      this.swap(i, j);
       yield true;
     }
     throw new Error('Pivot not found');

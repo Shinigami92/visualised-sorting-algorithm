@@ -188,19 +188,19 @@ export default class App extends Vue {
   public beforeMount(): void {
     this.sortServices.set(
       SortAlgorithmName.BubbleSort,
-      new BubbleSortService<number>(this.list, (i1, i2) => i1 < i2, undefined, this.millis)
+      new BubbleSortService<number>(this.list, (i1, i2) => i1 < i2, this.millis)
     );
     this.sortServices.set(
       SortAlgorithmName.SelectionSort,
-      new SelectionSortService<number>(this.list, (i1, i2) => i1 > i2, undefined, this.millis)
+      new SelectionSortService<number>(this.list, (i1, i2) => i1 > i2, this.millis)
     );
     this.sortServices.set(
       SortAlgorithmName.InsertionSort,
-      new InsertionSortService<number>(this.list, (i1, i2) => i1 < i2, undefined, this.millis)
+      new InsertionSortService<number>(this.list, (i1, i2) => i1 < i2, this.millis)
     );
     this.sortServices.set(
       SortAlgorithmName.ShellSort,
-      new ShellSortService<number, number>(this.list, (i, v) => i < v, undefined, undefined, undefined, this.millis)
+      new ShellSortService<number, number>(this.list, (i, v) => i < v, this.millis)
     );
     this.sortServices.set(
       SortAlgorithmName.QuickSortNotThreaded,
@@ -208,8 +208,6 @@ export default class App extends Vue {
         this.list,
         (i, v) => i > v,
         (i, v) => i < v,
-        undefined,
-        undefined,
         this.millis
       )
     );
@@ -219,8 +217,6 @@ export default class App extends Vue {
         this.list,
         (i, v) => i > v,
         (i, v) => i < v,
-        undefined,
-        undefined,
         this.millis
       )
     );

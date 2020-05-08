@@ -1,25 +1,22 @@
 import { sleep } from './UtilFunction';
 
 export type CompareCallback<T, U = T> = (t: T, u: U) => boolean;
-export type SwapCallback<T> = (list: T[], i1: number, i2: number) => void;
 
 export abstract class AbstractSortService<T, U = T> {
   protected list: T[];
   protected listSize: number;
   protected _millis: number;
   protected readonly compare: CompareCallback<T, U>;
-  protected readonly swap?: SwapCallback<T>;
   protected running: boolean = false;
   protected interrupt: boolean = false;
 
-  public constructor(list: T[], compare: CompareCallback<T, U>, swap?: SwapCallback<T>, millis: number = 0) {
+  public constructor(list: T[], compare: CompareCallback<T, U>, millis: number = 0) {
     if (millis < 0) {
       throw new Error('millis should not be negative');
     }
     this.list = list;
     this.listSize = list.length;
     this.compare = compare;
-    this.swap = swap;
     this._millis = millis;
   }
 
@@ -37,6 +34,12 @@ export abstract class AbstractSortService<T, U = T> {
   public setLines(list: T[]): void {
     this.list = list;
     this.listSize = list.length;
+  }
+
+  public swap(i: number, j: number): void {
+    const temp: T = this.list[i];
+    this.list[i] = this.list[j];
+    this.list[j] = temp;
   }
 
   public isRunning(): boolean {

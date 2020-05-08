@@ -1,8 +1,8 @@
-import { AbstractSortService, CompareCallback, SwapCallback } from './AbstractSortService';
+import { AbstractSortService, CompareCallback } from './AbstractSortService';
 
 export class BubbleSortService<T> extends AbstractSortService<T> {
-  public constructor(list: T[], compare: CompareCallback<T>, swap?: SwapCallback<T>, millis: number = 0) {
-    super(list, compare, swap, millis);
+  public constructor(list: T[], compare: CompareCallback<T>, millis: number = 0) {
+    super(list, compare, millis);
   }
 
   protected *process(): Generator<boolean, void, unknown> {
@@ -11,13 +11,7 @@ export class BubbleSortService<T> extends AbstractSortService<T> {
         let t1: T = this.list[i];
         let t2: T = this.list[i + 1];
         if (this.compare(t1, t2)) {
-          if (this.swap) {
-            this.swap(this.list, i, i + 1);
-          } else {
-            const temp: T = this.list[i];
-            this.list[i] = this.list[i + 1];
-            this.list[i + 1] = temp;
-          }
+          this.swap(i, i + 1);
           yield true;
         }
       }
