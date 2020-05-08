@@ -47,7 +47,7 @@ export default class App extends Vue {
     SortAlgorithmName.SelectionSort,
     SortAlgorithmName.InsertionSort,
     SortAlgorithmName.ShellSort,
-    //   SortAlgorithmName.RandomSelectionSort,
+    // SortAlgorithmName.RandomSelectionSort,
     SortAlgorithmName.QuickSort,
     SortAlgorithmName.QuickSortNotThreaded
   ];
@@ -76,60 +76,12 @@ export default class App extends Vue {
       console.log('Cant switch because sorting is currently in progress');
       return;
     }
-    switch (sortAlgorithmName) {
-      case SortAlgorithmName.SelectionSort:
-        if (!(this.sortService instanceof SelectionSortService)) {
-          console.log('Switched to SelectionSort');
-          // statusbarSortalgorithm.setText('SelectionSort');
-          this.sortAlgorithm = SortAlgorithmName.SelectionSort;
-          this.sortService = this.sortServices.get(SortAlgorithmName.SelectionSort) ?? null;
-        }
-        break;
-      case SortAlgorithmName.InsertionSort:
-        if (!(this.sortService instanceof InsertionSortService)) {
-          console.log('Switched to InsertionSort');
-          // statusbarSortalgorithm.setText("InsertionSort");
-          this.sortAlgorithm = SortAlgorithmName.InsertionSort;
-          this.sortService = this.sortServices.get(SortAlgorithmName.InsertionSort) ?? null;
-        }
-        break;
-      case SortAlgorithmName.QuickSort:
-        if (!(this.sortService instanceof QuickSortService)) {
-          console.log('Switched to QuickSort');
-          // statusbarSortalgorithm.setText("QuickSort");
-          this.sortService = this.sortServices.get(SortAlgorithmName.QuickSort) ?? null;
-        }
-        break;
-      case SortAlgorithmName.QuickSortNotThreaded:
-        if (!(this.sortService instanceof QuickSortNotThreadedService)) {
-          console.log('Switched to QuickSortNotThreaded');
-          // statusbarSortalgorithm.setText('QuickSortNotThreaded');
-          this.sortService = this.sortServices.get(SortAlgorithmName.QuickSortNotThreaded) ?? null;
-        }
-        break;
-      case SortAlgorithmName.ShellSort:
-        if (!(this.sortService instanceof ShellSortService)) {
-          console.log('Switched to ShellSort');
-          // statusbarSortalgorithm.setText('ShellSort');
-          this.sortService = this.sortServices.get(SortAlgorithmName.ShellSort) ?? null;
-        }
-        break;
-      // case RandomSelectionSort:
-      // 	if (!(sortService instanceof RandomSelectionSortService)) {
-      // 		System.out.println("Switched to RandomSelectionSort");
-      // 		statusbarSortalgorithm.setText("RandomSelectionSort");
-      // 		sortService = sortServices.get(SortAlgorithmName.RandomSelectionSort);
-      // 	}
-      // 	break;
-      case SortAlgorithmName.BubbleSort:
-      default:
-        if (!(this.sortService instanceof BubbleSortService)) {
-          console.log('Switched to BubbleSort');
-          // statusbarSortalgorithm.setText('BubbleSort');
-          this.sortAlgorithm = SortAlgorithmName.BubbleSort;
-          this.sortService = this.sortServices.get(SortAlgorithmName.BubbleSort) ?? null;
-        }
-        break;
+
+    const sortService: AbstractSortService<number> | undefined = this.sortServices.get(sortAlgorithmName);
+    if (sortService) {
+      console.log(`Switched to ${sortAlgorithmName}`);
+      this.sortAlgorithm = sortAlgorithmName;
+      this.sortService = sortService;
     }
   }
 
