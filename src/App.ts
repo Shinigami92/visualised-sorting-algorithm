@@ -37,7 +37,7 @@ export default class App extends Vue {
   @Ref('canvas')
   public readonly canvas!: HTMLCanvasElement;
 
-  public n: number = 1000;
+  public n: number = 500;
   public delayActive: boolean = true;
   public millis: number = 10;
   public theme: Theme = Theme.DefaultDots;
@@ -61,7 +61,7 @@ export default class App extends Vue {
     Theme.HsvLines
   ];
 
-  private N: number = 1000;
+  private N: number = 500;
   private list: number[] = [];
 
   private readonly sortServices: Map<SortAlgorithmName, AbstractSortService<number>> = new Map();
