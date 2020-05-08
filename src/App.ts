@@ -8,7 +8,6 @@ import { QuickSortNotThreadedService } from './shared/QuickSortNotThreadedServic
 import { QuickSortService } from './shared/QuickSortService';
 import { SelectionSortService } from './shared/SelectionSortService';
 import { ShellSortService } from './shared/ShellSortService';
-import { sleep } from './shared/UtilFunction';
 
 export const enum SortAlgorithmName {
   BubbleSort = 'BubbleSort',
@@ -257,67 +256,65 @@ export default class App extends Vue {
     }
   }
 
-  private async renderLoop(): Promise<void> {
+  private renderLoop(): void {
     const ctx: CanvasRenderingContext2D | null = this.canvas.getContext('2d');
     if (!ctx) {
+      requestAnimationFrame(this.renderLoop);
       return;
     }
 
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const width: number = this.canvas.width;
-      const height: number = this.canvas.height;
-      const dw: number = width / this.list.length;
-      const dh: number = height / this.list.length;
+    const width: number = this.canvas.width;
+    const height: number = this.canvas.height;
+    const dw: number = width / this.list.length;
+    const dh: number = height / this.list.length;
 
-      ctx.clearRect(0, 0, width, height);
-      switch (this.theme) {
-        case Theme.HsvDots:
-          for (let x: number = 0; x < this.N; x++) {
-            const o: number = this.list[x];
-            ctx.fillStyle = `hsl(${(o / this.N) * 360}, 78%, 54%)`;
-            ctx.fillRect(dw * x, dh * o, 2.0, 2.0);
-          }
-          break;
-        case Theme.HsvLines:
-          for (let x: number = 0; x < this.N; x++) {
-            const o: number = this.list[x];
-            ctx.fillStyle = `hsl(${(o / this.N) * 360}, 78%, 54%)`;
-            ctx.fillRect(dw * x, dh * o, 2.0, height);
-          }
-          break;
-        case Theme.DefaultLines:
-          ctx.fillStyle = 'black';
-          for (let x: number = 0; x < this.N; x++) {
-            const o: number = this.list[x];
-            ctx.fillRect(dw * x, dh * o, 2.0, height);
-          }
-          break;
-        case Theme.DefaultLinesWithRed:
-          for (let x: number = 0; x < this.N; x++) {
-            const o: number = this.list[x];
-            ctx.fillStyle = -(o - this.N + 1) == x ? 'red' : 'black';
-            ctx.fillRect(dw * x, dh * o, 2.0, height);
-          }
-          break;
-        case Theme.DefaultDotsWithRed:
-          for (let x: number = 0; x < this.N; x++) {
-            const o: number = this.list[x];
-            ctx.fillStyle = -(o - this.N + 1) == x ? 'red' : 'black';
-            ctx.fillRect(dw * x, dh * o, 2.0, 2.0);
-          }
-          break;
-        case Theme.DefaultDots:
-        default:
-          ctx.fillStyle = 'black';
-          for (let x: number = 0; x < this.N; x++) {
-            const o: number = this.list[x];
-            ctx.fillRect(dw * x, dh * o, 2, 2);
-          }
-          break;
-      }
-
-      await sleep(1);
+    ctx.clearRect(0, 0, width, height);
+    switch (this.theme) {
+      case Theme.HsvDots:
+        for (let x: number = 0; x < this.N; x++) {
+          const o: number = this.list[x];
+          ctx.fillStyle = `hsl(${(o / this.N) * 360}, 78%, 54%)`;
+          ctx.fillRect(dw * x, dh * o, 2.0, 2.0);
+        }
+        break;
+      case Theme.HsvLines:
+        for (let x: number = 0; x < this.N; x++) {
+          const o: number = this.list[x];
+          ctx.fillStyle = `hsl(${(o / this.N) * 360}, 78%, 54%)`;
+          ctx.fillRect(dw * x, dh * o, 2.0, height);
+        }
+        break;
+      case Theme.DefaultLines:
+        ctx.fillStyle = 'black';
+        for (let x: number = 0; x < this.N; x++) {
+          const o: number = this.list[x];
+          ctx.fillRect(dw * x, dh * o, 2.0, height);
+        }
+        break;
+      case Theme.DefaultLinesWithRed:
+        for (let x: number = 0; x < this.N; x++) {
+          const o: number = this.list[x];
+          ctx.fillStyle = -(o - this.N + 1) == x ? 'red' : 'black';
+          ctx.fillRect(dw * x, dh * o, 2.0, height);
+        }
+        break;
+      case Theme.DefaultDotsWithRed:
+        for (let x: number = 0; x < this.N; x++) {
+          const o: number = this.list[x];
+          ctx.fillStyle = -(o - this.N + 1) == x ? 'red' : 'black';
+          ctx.fillRect(dw * x, dh * o, 2.0, 2.0);
+        }
+        break;
+      case Theme.DefaultDots:
+      default:
+        ctx.fillStyle = 'black';
+        for (let x: number = 0; x < this.N; x++) {
+          const o: number = this.list[x];
+          ctx.fillRect(dw * x, dh * o, 2, 2);
+        }
+        break;
     }
+
+    requestAnimationFrame(this.renderLoop);
   }
 }
