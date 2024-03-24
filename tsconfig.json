@@ -1,27 +1,29 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2022",
     "module": "ESNext",
-    "strict": true,
-    "jsx": "preserve",
+    "moduleResolution": "Bundler",
     "importHelpers": true,
-    "moduleResolution": "Node",
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
+    "noEmit": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "ScriptHost"],
+    "types": ["node"],
+    "resolveJsonModule": true,
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["vuetify", "webpack-env"],
-    "lib": ["ESNext", "DOM", "DOM.Iterable", "ScriptHost"],
-    "noUnusedLocals": true,
-    "allowJs": true,
-    "emitDecoratorMetadata": true,
-    "downlevelIteration": true,
-    "removeComments": true
+    // Vite currently incorrectly implements `FSWatcher`
+    "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

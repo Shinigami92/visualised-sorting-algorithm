@@ -1,13 +1,14 @@
-import Vue from 'vue';
+// Plugins
+import { registerPlugins } from '@/plugins';
+
+// Components
 import App from './App.vue';
-import vuetify from './plugins/vuetify';
-import 'roboto-fontface/css/roboto/roboto-fontface.css';
-import '@mdi/font/css/materialdesignicons.css';
 
-Vue.config.productionTip = false;
+// Composables
+import { createApp } from 'vue';
 
-new Vue({
-  vuetify,
+const app = createApp(App);
 
-  render: (h) => h(App)
-}).$mount('#app');
+registerPlugins(app);
+
+app.mount('#app');

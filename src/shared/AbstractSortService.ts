@@ -7,13 +7,18 @@ export abstract class AbstractSortService<T, U = T> {
   protected listSize: number;
   protected _millis: number;
   protected readonly compare: CompareCallback<T, U>;
-  protected running: boolean = false;
-  protected interrupt: boolean = false;
+  protected running = false;
+  protected interrupt = false;
 
-  public constructor(list: T[], compare: CompareCallback<T, U>, millis: number = 0) {
+  public constructor(
+    list: T[],
+    compare: CompareCallback<T, U>,
+    millis: number = 0,
+  ) {
     if (millis < 0) {
       throw new Error('millis should not be negative');
     }
+
     this.list = list;
     this.listSize = list.length;
     this.compare = compare;
@@ -28,6 +33,7 @@ export abstract class AbstractSortService<T, U = T> {
     if (millis < 0) {
       throw new Error('millis should not be negative');
     }
+
     this._millis = millis;
   }
 
@@ -55,27 +61,36 @@ export abstract class AbstractSortService<T, U = T> {
       this.cancel();
       setTimeout(() => this.start(), 100);
     } else {
-      this.start();
+      void this.start();
     }
   }
 
   protected async start(): Promise<void> {
-    const process: IterableIterator<boolean> | AsyncIterableIterator<boolean> = this.process();
+    const process: IterableIterator<boolean> | AsyncIterableIterator<boolean> =
+      this.process();
     this.running = true;
     while (!this.interrupt) {
       const next:
         | IteratorYieldResult<boolean>
         | IteratorReturnResult<any>
         | Promise<IteratorResult<boolean, any>> = process.next();
-      const hasNext: boolean = next instanceof Promise ? (await next).value : next.value;
+      const hasNext: boolean =
+        next instanceof Promise
+          ? // eslint-disable-next-line unicorn/no-await-expression-member
+            (await next).value
+          : next.value;
       if (!hasNext) {
         break;
       }
+
       await sleep(this.millis);
     }
+
     this.interrupt = false;
     this.running = false;
   }
 
-  protected abstract process(): IterableIterator<boolean> | AsyncIterableIterator<boolean>;
+  protected abstract process():
+    | IterableIterator<boolean>
+    | AsyncIterableIterator<boolean>;
 }
