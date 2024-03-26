@@ -14,8 +14,9 @@ export class QuickSortService<T, U extends T> extends AbstractSortService<
     leftCompare: CompareCallback<T, U>,
     rightCompare: CompareCallback<T, U>,
     millis: number = 0,
+    simultaneousSwaps: number = 1,
   ) {
-    super(list, null as any, millis);
+    super(list, null as any, millis, simultaneousSwaps);
     this.leftCompare = leftCompare;
     this.rightCompare = rightCompare;
   }
@@ -29,6 +30,9 @@ export class QuickSortService<T, U extends T> extends AbstractSortService<
     if (lo < hi) {
       let p!: number;
       const gen: Generator<boolean, number, unknown> = this.partition(lo, hi);
+
+      let bulkCount = 0;
+
       while (!this.interrupt) {
         const value: boolean | number = gen.next().value;
         if (typeof value === 'number') {
@@ -36,7 +40,10 @@ export class QuickSortService<T, U extends T> extends AbstractSortService<
           break;
         }
 
-        await sleep(1);
+        if (bulkCount++ > this.simultaneousSwaps) {
+          await sleep(this.millis);
+          bulkCount = 0;
+        }
       }
 
       await Promise.allSettled([

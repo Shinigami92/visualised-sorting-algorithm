@@ -6,8 +6,9 @@ export class SelectionSortService<T> extends AbstractSortService<T> {
     list: T[],
     compare: CompareCallback<T>,
     millis: number = 0,
+    simultaneousSwaps: number = 1,
   ) {
-    super(list, compare, millis);
+    super(list, compare, millis, simultaneousSwaps);
   }
 
   protected *process(): Generator<boolean, void, unknown> {

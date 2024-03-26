@@ -11,8 +11,9 @@ export class ShellSortService<T, U extends T> extends AbstractSortService<
     list: T[],
     compare: CompareCallback<T, U>,
     millis: number = 0,
+    simultaneousSwaps: number = 1,
   ) {
-    super(list, compare, millis);
+    super(list, compare, millis, simultaneousSwaps);
     this.gapSequence = [1750, 701, 301, 132, 57, 23, 10, 4, 1];
   }
 
