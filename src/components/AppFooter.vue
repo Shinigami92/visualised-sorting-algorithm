@@ -4,7 +4,9 @@ import { VBtn, VFooter, VIcon, VSpacer } from 'vuetify/components';
 
 <template>
   <VFooter app color="grey-lighten-5">
-    <span>Copyright &copy; 2020 Christopher Quadflieg aka Shinigami</span>
+    <span>
+      Copyright &copy; 2020 - 2024 Christopher Quadflieg aka Shinigami
+    </span>
     <VSpacer />
     <VBtn
       icon

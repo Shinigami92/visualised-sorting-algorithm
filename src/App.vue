@@ -429,11 +429,7 @@ function renderLoop(): void {
               }"
               :tick-size="4"
               :step="1"
-            >
-              <template #append>
-                <span>{{ simultaneousSwaps }} swaps</span>
-              </template>
-            </VSlider>
+            />
           </VCol>
 
           <VCol cols="12">
