@@ -10,7 +10,7 @@ import { QuickSortService } from '@/shared/QuickSortService';
 import { SelectionSortService } from '@/shared/SelectionSortService';
 import { ShellSortService } from '@/shared/ShellSortService';
 import { useResizeObserver } from '@vueuse/core';
-import type { Ref } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 import { computed, onBeforeMount, onMounted, ref, watch } from 'vue';
 import {
   VApp,
@@ -51,6 +51,10 @@ const canvas: Ref<HTMLCanvasElement | null> = ref(null);
 
 const n: Ref<number> = ref(500);
 const millis: Ref<number> = ref(10);
+const simultaneousSwapsBase: Ref<number> = ref(0);
+const simultaneousSwaps: ComputedRef<number> = computed(() =>
+  Math.pow(10, simultaneousSwapsBase.value),
+);
 const theme: Ref<Theme> = ref(Theme.DefaultDots);
 
 const sortAlgorithms: ReadonlyArray<SortAlgorithmName> = [
@@ -158,6 +162,7 @@ onBeforeMount(() => {
       list.value,
       (i1, i2) => i1 < i2,
       millis.value,
+      simultaneousSwaps.value,
     ),
   );
   sortServices.value.set(
@@ -166,6 +171,7 @@ onBeforeMount(() => {
       list.value,
       (i1, i2) => i1 > i2,
       millis.value,
+      simultaneousSwaps.value,
     ),
   );
   sortServices.value.set(
@@ -174,6 +180,7 @@ onBeforeMount(() => {
       list.value,
       (i1, i2) => i1 < i2,
       millis.value,
+      simultaneousSwaps.value,
     ),
   );
   sortServices.value.set(
@@ -182,6 +189,7 @@ onBeforeMount(() => {
       list.value,
       (i, v) => i < v,
       millis.value,
+      simultaneousSwaps.value,
     ),
   );
   sortServices.value.set(
@@ -191,6 +199,7 @@ onBeforeMount(() => {
       (i, v) => i > v,
       (i, v) => i < v,
       millis.value,
+      simultaneousSwaps.value,
     ),
   );
   sortServices.value.set(
@@ -200,6 +209,7 @@ onBeforeMount(() => {
       (i, v) => i > v,
       (i, v) => i < v,
       millis.value,
+      simultaneousSwaps.value,
     ),
   );
 
@@ -219,6 +229,18 @@ watch(
     if (sortService.value) {
       for (const [_, service] of sortServices.value) {
         service.millis = millis;
+      }
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  simultaneousSwaps,
+  (simultaneousSwaps) => {
+    if (sortService.value) {
+      for (const [_, service] of sortServices.value) {
+        service.simultaneousSwaps = simultaneousSwaps;
       }
     }
   },
@@ -388,6 +410,26 @@ function renderLoop(): void {
                 <span>{{ millis }} ms</span>
               </template>
             </VSlider>
+          </VCol>
+
+          <VCol cols="12">
+            <span class="pl-1">Simultaneous swaps</span>
+            <VSlider
+              v-model="simultaneousSwapsBase"
+              class="pt-2 pb-4"
+              hide-details
+              :min="0"
+              :max="3"
+              show-ticks="always"
+              :ticks="{
+                0: '1',
+                1: '10',
+                2: '100',
+                3: '1000',
+              }"
+              :tick-size="4"
+              :step="1"
+            />
           </VCol>
 
           <VCol cols="12">

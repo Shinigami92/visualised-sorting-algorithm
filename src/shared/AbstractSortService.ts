@@ -6,6 +6,7 @@ export abstract class AbstractSortService<T, U = T> {
   protected list: T[];
   protected listSize: number;
   protected _millis: number;
+  protected _simultaneousSwaps: number;
   protected readonly compare: CompareCallback<T, U>;
   protected running = false;
   protected interrupt = false;
@@ -14,15 +15,21 @@ export abstract class AbstractSortService<T, U = T> {
     list: T[],
     compare: CompareCallback<T, U>,
     millis: number = 0,
+    simultaneousSwaps = 1,
   ) {
     if (millis < 0) {
       throw new Error('millis should not be negative');
+    }
+
+    if (simultaneousSwaps < 1) {
+      throw new Error('simultaneousSwaps should be greater than 0');
     }
 
     this.list = list;
     this.listSize = list.length;
     this.compare = compare;
     this._millis = millis;
+    this._simultaneousSwaps = simultaneousSwaps;
   }
 
   public get millis(): number {
@@ -35,6 +42,18 @@ export abstract class AbstractSortService<T, U = T> {
     }
 
     this._millis = millis;
+  }
+
+  public get simultaneousSwaps(): number {
+    return this._simultaneousSwaps;
+  }
+
+  public set simultaneousSwaps(simultaneousSwaps: number) {
+    if (simultaneousSwaps < 1) {
+      throw new Error('simultaneousSwaps should be greater than 0');
+    }
+
+    this._simultaneousSwaps = simultaneousSwaps;
   }
 
   public setLines(list: T[]): void {
@@ -69,6 +88,9 @@ export abstract class AbstractSortService<T, U = T> {
     const process: IterableIterator<boolean> | AsyncIterableIterator<boolean> =
       this.process();
     this.running = true;
+
+    let bulkCount = 0;
+
     while (!this.interrupt) {
       const next:
         | IteratorYieldResult<boolean>
@@ -83,7 +105,10 @@ export abstract class AbstractSortService<T, U = T> {
         break;
       }
 
-      await sleep(this.millis);
+      if (bulkCount++ > this.simultaneousSwaps) {
+        await sleep(this.millis);
+        bulkCount = 0;
+      }
     }
 
     this.interrupt = false;
